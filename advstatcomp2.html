@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <style>
+        code, samp, kbd {
+	font-family: "Courier New", Courier, monospace, sans-serif;
+	text-align: left;
+	color: #555;
+            font-size: 13px;
+	}
+pre code {
+	line-height: 1.6em;	
+    font-size: 11px;
+	}
+pre {
+	padding: 0.1em 0.5em 0.3em 0.7em;
+	border-left: 11px solid #ccc;
+	margin: 1.7em 0 1.7em 0.3em;
+	overflow: auto;
+	width: 93%;
+	}
+/* target IE7 and IE6 */
+*:first-child+html pre {
+	padding-bottom: 2em;
+	overflow-y: hidden;
+	overflow: visible;
+	overflow-x: auto; 
+	}
+* html pre { 
+	padding-bottom: 2em;
+	overflow: visible;
+	overflow-x: auto;
+	}
+    </style>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+<h1>Lab 2</h1>
+    In lab 2, we are trying out functional programming, or at least using the functional style of R.
+
+    <section>
+        <h2>
+            Optimization
+        </h2>
+        <p>
+            Fitting a statistical model is frequently an optimization problem. Optimization in this sense means finding a
+            set of parameters that gives an optimal score or fitness value of some kind.
+        </p>
+        <p>
+            Numerical optimization is frequently a hard problem beyond trivial cases. One wants a global optimum, i.e. that
+            there is no other set of parameter values that constitutes a better fit. Those optimization methods that give
+            strong guarantees tend to only promise that a <em>local</em> optimum is reached. This means that it is not possible
+            to make any small change to the function value.
+        </p>
+        <p>
+            Create a univariate function that computes the sum of (<em>x</em> - 3) <sup>2</sup> + 2 * (<em>x</em> - 3) <sup>2</sup> + 3 * (<em>x</em> - 15) <sup>2</sup> + sin(100<em></em>).
+        </p>
+        <p>
+            Try to use<code>optimise</code> with this function. You also need to specify a range, as a list of lower and upper bounds, e.g. <code>optimise(f, c(0,100))</code>. Try at least the ranges (0,15), (9,12), and (10,11). Do you get the same optimum each time? Is is the global optimum?
+         </p>
+        <h2>
+            Adding a file in a repository
+        </h2>
+        <p>
+            Create a new R file <code>lab2a.R</code> in your <code>uuadvstatcomp</code> directory if you haven't already done so. Include the code for your
+            <code>optimise</code> experiments there, and keep updating this file throughout the lab. Do remember to commit to the file frequently!
+        </p>
+        <p>
+            You can add a file by just doing another commit in the graphical client. If you're using the command-line based git client, the most clear way is
+            to first add and then commit:
+        </p>
+        <pre>
+            git add lab2a.R
+            git commit -m "Added lab 2"
+        </pre>
+        <h2>
+            Integrating a function
+        </h2>
+        <p>
+            Now, implement the function <em>x</em>sin(<em>x</em>). We want to integrate this function over a large finite range, from -7e5 to 7e5.
+        </p>
+        <p>
+            The <code>integrate</code> function in R is actually adaptive. This means that it tries to find out what regions to explore in more detail to give a good
+            approximation of the integral. To get a good approximation of the integral, you will need to increase the named parameter <code>subdivisions</code> to a high value, say 1e7.
+        </p>
+        <p>
+            How long does it take to compute the value? Try using <code>system.time</code>. Add whatever experiments you think illustrate this to your <code>lab2a.R</code> file and commit it.
+        </p>
+        <p>
+            We can now try using the <code>parallel</code> library, like we did in the lecture. A hint could be that mathematically you can
+            divide a definite integral over a closed interval into the sum of the corresponding definite intervals over several subintervals that together
+            form the total interval.
+        </p>
+        <p>
+            Time your resulting code. What cluster size are you using? What kind of speedup do you get? Is it in any way relevant that the inner method is adaptive?
+        </p>
+        <p>
+            Add some examples of your parallel integration to the script file and commit it.
+        </p>
+
+        <h2>Functional operators</h2>
+        <p>
+            The most complex form of functional programming could be seen to be when a function takes a function as input and returns another function.
+            One purpose of doing this is to achieve what is sometimes called aspect-oriented programming. You can add a specific form of feature to any
+            existing function. Let's have a look at some examples.
+        </p>
+            
+        <h2>Memoisation</h2>
+        <p>
+            A very common technique to achieve higher performance, at the cost of more memory, is to pre-calculate tables of values that are going to be used repeatedly. With closures,
+            you could make the outer function calculate the table and put it in the environment, while returning a function which then only makes look-ups in the table.
+        </p>
+        <p>
+            Sometimes, it is hard to predict what values are going to be used and you can't compute them all. Still, you may know that the same values will come back over and over.
+            In this case, a technique called <i>memoisation</i> is convenient. Simply store those input values that hav already been seen, and their corresponding output values. The
+            table is built up continuously, call by call.
+        </p>
+        <p>
+            By using functional operators in R, you can <i>add</i> memoisation to any existing function. Install the package <code>memoise</code>.
+            You can try memoisation with the Fibonacci example found on the <a href="http://adv-r.had.co.nz/Function-operators.html">textbook website</a> (slightly modified here).
+        </p>
+        <pre>
+fib <- function(n) {
+    if (n < 2) return(1)
+    fib(n - 2) + fib(n - 1)
+}
+            
+fib2 <- memoise(function(n) {
+  if (n < 2) return(1)
+  fib2(n - 2) + fib2(n - 1)
+})
+
+fib3 <- memoise(fib)
+        </pre>
+        <p>
+            Now time how long it takes to compute Fibonacci number 28, with <code>fib</code>, <code>fib2</code>,
+            and <code>fib3</code>. Which one is fastest the first time round? What if you do it right away again?
+        </p>
+        <p>
+            The <code>memoise</code> package has a nice <code>forget(<emph>memoisedfunction</emph>)</code> call.
+            This can be useful if you want to rerun the tests with the original case where the memoisation table is empty.
+        </p>
+    </section>    
+    <section>
+        <h2>Getting a SUPR account</h2>
+        <p>In blocks 2 and 3, and possibly for your project, you will benefit from having access to some high-performance computing resources.</p>
+        <p>The first step for this is to get an account at the SUPR service, which is common to all Swedish academic high-performance computing infrastructures.</p>
+        <p>If you do <emph>not</emph> already have such an account, go to <a href="https://supr.snic.se/person/register/">this page</a>. Click "Register via SWAMID" and login with your
+            ordinare user account there.
+        </p>
+    </section>
+</body>
+</html>
