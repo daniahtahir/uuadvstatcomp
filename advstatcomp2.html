@@ -144,12 +144,95 @@ fib3 <- memoise(fib)
         </p>
     </section>    
     <section>
+        <h2>Domain-specific languages</h2>
+        <p>
+            A <b>domain-specific language</b> (DSL) is a computer language specialized to a particular application domain.
+            This is in contrast to a general-purpose language, which is broadly applicable across domains, and lacks
+            specialized features for a particular domain [from Wikipedia]. R is a general-purpose programing language,
+            but we can develop DSLs on top of R. Some features of the language also makes this particularly attractive to do.
+        </p>
+        <p>
+            As an example of DSL for visualizations is ggplot2 which defines a <b>grammar of graphics</b> in R. The idea in ggplot is how the data maps to the parts of a graph, rather than describing the final graph itself.
+        </p>
+        <cite>
+“In brief, the grammar tells us that a statistical graphic is <b>mapping</b> from data to <b>aesthetic</b> attributes (color, shape, size)
+            of geometric objects (points, lines, bars). The plot may also contain statistical transformations of the data and is drawn
+            on a specific coordinate system” [from ggplot2 book]
+            </cite>
+
+        <p>
+            In base R plot we start with a blank canvas and build from there using the <code>plot</code> function.
+            We can’t go back and change our plot or translate our plot to a new plot. There is no graphical “language”.
+            The plot is just a series of R commands. <code>ggplot</code> has a special grammar for graphics. It automatically deals with spacing,
+            text, titles and allows you to annotate by “adding”. 
+        </p>
+        <h3>gplot()</h3>
+        <p>
+            <code>qplot()</code> is the quick way of using ggplot2. It looks for data in a data frame. Be careful that
+            your input data must be in the form of a data frame. If not, then you should reshape it. qplots are made up
+            of aesthetic (size, shape, color) and geoms (points, lines).
+        </p>
+        <p>
+            Here is an example how to use qplot.
+           First install ggplot2 package and load the library.</p>
+<pre>install.packages("ggplot2")	
+library(ggplot2)</pre>
+        <p>
+We work with the data set mpg in ggplot2. Here is the description of this data set: <a href="http://docs.ggplot2.org/0.9.2.1/mpg.html">http://docs.ggplot2.org/0.9.2.1/mpg.html</a>.
+            </p>
+<p>You can look at the structure of mpg data using <code>str()</code> to get a better understanding of its structure.</p>
+<pre>str(mpg)</pre>
+<p>We want to look at the relation between engine displacement (displ) and highway miles per gallon (hwy). We use:</p>
+<pre>qplot(displ, hwy , data=mpg)</pre>
+
+<p>The data set has three different factors:  <code>drv. f</code> = front-wheel drive, <code>r</code> = rear wheel drive, <code>4</code> = 4wd.
+    We can easily plot the relation between <code>displ</code> and <code>hwy</code> for different factors using <code>color=drv</code>.  </p>
+<pre>qplot(displ, hwy , data=mpg, color =drv)</pre>
+    <p>
+        <code>qplot()</code> automatically chooses different colors for rear wheel drive, front wheel drive and 4 wheel drive, using non-standard evaluation.
+        </p>
+        <p>
+You can add statistics to the plot using <code>geom</code>. Let’s add a smoother to a plot</p>
+        <pre>
+qplot(displ, hwy, data =mpg, geom=c("point","smooth")) </pre>
+        <p>
+You can also check the linear relationship for the data: </p>
+<pre>qplot(displ, hwy, data =mpg, geom=c("point","smooth"),method="lm") </pre>
+<p>
+You can check the linear relationship for different groups:</p>
+<pre>qplot(displ, hwy, data =mpg, geom=c("point","smooth"),method="lm",color=drv)</pre> 
+        <p>
+As we mentioned, one benefit of these plots is that you can modify them after they have been created.
+            </p>
+        <p>For example, you can use <code>theme()</code> to modify theme setting.  We assign the graph to variable:</p>
+<pre>gr <- qplot(displ, hwy, data =mpg, geom=c("point","smooth"),method="lm",color=drv)</pre>
+        <p> 
+and then we can modify it. Let’s change the color of the rectangluar elements to pink:</p>
+<pre>p + theme(panel.background = element_rect(colour = "pink"))</pre>
+        
+        <h3>Exercise</h3>
+<p>1. Load the data set <a href="http://docs.ggplot2.org/0.9.3.1/diamonds.html">diamonds</a> from ggplot2.</p>
+<p>2. Look at the variables <code>carat</code> and <codde>price</codde> in the dataframe and plot them against each other.</p>
+<p>3. Look at the relation between carat and price for different diamond colors. </p>
+<p>4. Add a smoother to the plot. </p>
+<p>5. Change the title of legend of your plot to “New legends”. Tips: look at the theme() help to find out how to change the title of legend. </p>
+<p>6. Find out how to draw a boxplot to check the distribution of price/carat for different colors. </p>
+<p><b>Add and commit a representative part of your plot work to your github project.</b></p> 
+<p></p><p>For reference, here are very useful videos to learn more about ggplot2:</p>
+<p>Plotting with ggplot2: Part 1: <a href="https://www.youtube.com/watch?v=HeqHMM4ziXA">https://www.youtube.com/watch?v=HeqHMM4ziXA</a></p>
+<p>Plotting with ggplot2: Part 2: <a href="https://www.youtube.com/watch?v=n8kYa9vu1l8">https://www.youtube.com/watch?v=n8kYa9vu1l8</a></p>
+    </section>
+    <section>
+
+    </section>
+    <section>
         <h2>Getting a SUPR account</h2>
         <p>In blocks 2 and 3, and possibly for your project, you will benefit from having access to some high-performance computing resources.</p>
         <p>The first step for this is to get an account at the SUPR service, which is common to all Swedish academic high-performance computing infrastructures.</p>
         <p>If you do <emph>not</emph> already have such an account, go to <a href="https://supr.snic.se/person/register/">this page</a>. Click "Register via SWAMID" and login with your
-            ordinare user account there.
+            ordinary university user account there. Doing this now might save some time and hassle later.
         </p>
     </section>
+
 </body>
 </html>
