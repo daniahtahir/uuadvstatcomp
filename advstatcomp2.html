@@ -166,7 +166,7 @@ fib3 <- memoise(fib)
             The plot is just a series of R commands. <code>ggplot</code> has a special grammar for graphics. It automatically deals with spacing,
             text, titles and allows you to annotate by “adding”. 
         </p>
-        <h3>gplot()</h3>
+        <h3>qplot()</h3>
         <p>
             <code>qplot()</code> is the quick way of using ggplot2. It looks for data in a data frame. Be careful that
             your input data must be in the form of a data frame. If not, then you should reshape it. qplots are made up
@@ -207,8 +207,8 @@ As we mentioned, one benefit of these plots is that you can modify them after th
         <p>For example, you can use <code>theme()</code> to modify theme setting.  We assign the graph to variable:</p>
 <pre>gr <- qplot(displ, hwy, data =mpg, geom=c("point","smooth"),method="lm",color=drv)</pre>
         <p> 
-and then we can modify it. Let’s change the color of the rectangluar elements to pink:</p>
-<pre>p + theme(panel.background = element_rect(colour = "pink"))</pre>
+and then we can modify it. Let’s change the color of the rectangular elements to pink:</p>
+<pre>gr + theme(panel.background = element_rect(fill = "pink"))</pre>
         
         <h3>Exercise</h3>
 <p>1. Load the data set <a href="http://docs.ggplot2.org/0.9.3.1/diamonds.html">diamonds</a> from ggplot2.</p>
