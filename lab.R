@@ -16,6 +16,7 @@ plot(y,0,30)
 function(x) {x*sin(x)}
 integrate(function(x) {x*sin(x)}, lower = -7e5, upper = 7e5, subdivisions=1e7)
 system.time(integrate(function(x) {x*sin(x)}, lower = -7e5, upper = 7e5, subdivisions=1e7))
+# 18.14
 
 #PARALLEL
 
@@ -46,5 +47,40 @@ system.time(fib(28))
 system.time(fib2(28))
 system.time(fib3(28))  #fib3 is the fastest
 
+#GGPLOT
 
+#Example to use qplot
 
+#first install ggplot2 package, then load the library:
+#install.packages("ggplot2")  
+library(ggplot2)
+#We work with the data set mpg in ggplot2:
+str(mpg)
+#We want to look at the relation between engine displacement(displ) and highway miles per gallon(hwy):
+qplot(displ, hwy , data=mpg)
+#the data set has three different factors: drv. f = front-wheel drive, r = rear wheel drive, 4 = 4wd.
+#We can plot the relation b/w displ and hwy for different factors using color=drv:
+qplot(displ, hwy , data=mpg, color =drv)
+#we can add statistics to the plot using geom. Let's add a smoother to a plot:
+qplot(displ, hwy, data =mpg, geom=c("point","smooth"))
+#we can also check the linear relationship for the data:
+qplot(displ, hwy, data =mpg, geom=c("point","smooth"),method="lm")
+#we can check the linear relationship for different groups:
+qplot(displ, hwy, data =mpg, geom=c("point","smooth"),method="lm",color=drv)
+#we can use theme() to modify theme setting.
+#We first assign the graph to variable gr:
+gr <- qplot(displ, hwy, data =mpg, geom=c("point","smooth"),method="lm",color=drv)
+#then we can modify it,e.g change the color of the rectangular elements to pink:
+gr + theme(panel.background = element_rect(fill = "pink"))
+
+# Exercise
+
+library(ggplot2)
+str(diamonds)
+qplot(carat, price , data=diamonds)
+qplot(carat, price , data=diamonds, color =color)
+qplot(carat, price , data=diamonds,geom=c("point","smooth"))
+gr2 <- qplot(carat, price , data=diamonds,geom=c("point","smooth"))
+gr2 + scale_colour_brewer(name = "New legends")
+#boxplot(price~carat,data=diamonds,col=(c("gold","green")), main="boxplot", xlab="carat", ylab="price")
+qplot(color, price/carat, data = diamonds, geom = 'boxplot', fill = color)
