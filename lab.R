@@ -22,13 +22,29 @@ system.time(integrate(function(x) {x*sin(x)}, lower = -7e5, upper = 7e5, subdivi
 #make subintervals of the given interval (-7e5,7e5)
 
 library(parallel)
-cl <- makePSOCKcluster(16)  #1.56
+cl <- makePSOCKcluster(16)  #1.56 with cluster size 16
 system.time(parLapply(cl,(-7:7)*1e5,(function(x) { integrate(function (x) { x*sin(x) }, x, x+1e5, subdivisions = 1e7)})))
 stopCluster(cl)
 
+#MEMOISE
 
+fib <- function(n) {
+  if (n < 2) return(1)
+  fib(n - 2) + fib(n - 1)
+}
 
+fib2 <- memoise(function(n) {
+  if (n < 2) return(1)
+  fib2(n - 2) + fib2(n - 1)
+})
+fib3 <- memoise(fib)
 
+fib(28)
+fib2(28)
+fib3(28)
+system.time(fib(28))
+system.time(fib2(28))
+system.time(fib3(28))  #fib3 is the fastest
 
 
 
